@@ -63,13 +63,15 @@ def format_comment(comment, depth=0):
 
     return formatted
 
-def save_to_markdown(reddit, subreddit_name, limit=10):
+def save_to_markdown(reddit, subreddit_name, limit=3):
     subreddit = reddit.subreddit(subreddit_name)
     interesting_posts = []
 
-    for post in subreddit.hot(limit=limit):
+    for post in subreddit.hot(limit=None):
         if is_interesting(post):
             interesting_posts.append(post)
+            if len(interesting_posts) == limit:
+                break
 
     if interesting_posts:
         date_str = datetime.now().strftime('%Y-%m-%d')
@@ -128,7 +130,7 @@ def main():
     parser.add_argument("--client_secret", help="Reddit API client secret")
     parser.add_argument("--user_agent", default="praw_bot", help="User agent for Reddit API")
     parser.add_argument("--subreddit", default="LocalLLaMA", help="Subreddit to scrape")
-    parser.add_argument("--limit", type=int, default=50, help="Number of posts to scrape")
+    parser.add_argument("--limit", type=int, default=3, help="Number of posts to scrape")
     args = parser.parse_args()
 
     reddit = get_reddit_instance(args.client_id, args.client_secret, args.user_agent)
