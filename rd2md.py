@@ -63,7 +63,7 @@ def format_comment(comment, depth=0):
 
     return formatted
 
-def save_to_markdown(reddit, subreddit_name, limit=3):
+def save_to_markdown(reddit, subreddit_name, limit):
     subreddit = reddit.subreddit(subreddit_name)
     interesting_posts = []
 
@@ -83,7 +83,7 @@ def save_to_markdown(reddit, subreddit_name, limit=3):
         filename = os.path.join(base_folder, f"interesting_posts.md")
 
         with open(filename, "w", encoding="utf-8") as f:
-            f.write(f"# Interesting posts from r/{subreddit_name}\n\n")
+            # f.write(f"# Interesting posts from r/{subreddit_name}\n\n")
             for post in interesting_posts:
                 f.write(f"## {post.title}\n\n")
                 f.write(f"* Score: {post.score}\n")
@@ -124,6 +124,10 @@ def save_to_markdown(reddit, subreddit_name, limit=3):
     else:
         print("No interesting posts found.")
 
+def rd2md(client_id=None, client_secret=None, user_agent="praw_bot", subreddit_name="LocalLLaMA", limit=1):
+    reddit = get_reddit_instance(client_id, client_secret, user_agent)
+    save_to_markdown(reddit, subreddit_name, limit)
+
 def main():
     parser = argparse.ArgumentParser(description="Reddit Scraper Bot")
     parser.add_argument("--client_id", help="Reddit API client ID")
@@ -133,8 +137,10 @@ def main():
     parser.add_argument("--limit", type=int, default=3, help="Number of posts to scrape")
     args = parser.parse_args()
 
-    reddit = get_reddit_instance(args.client_id, args.client_secret, args.user_agent)
-    save_to_markdown(reddit, args.subreddit, args.limit)
+    # reddit = get_reddit_instance(args.client_id, args.client_secret, args.user_agent)
+    # save_to_markdown(reddit, args.subreddit, args.limit)
+
+    rd2md(args.client_id, args.client_secret, args.user_agent, args.subreddit, args.limit)
 
 if __name__ == "__main__":
     main()
